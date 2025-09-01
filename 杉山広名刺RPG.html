@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>杉山広の名刺RPG</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b1020; --panel:#0f172a; --ink:#e5e7eb; --muted:#9ca3af;
+    --accent:#86efac; --accent2:#60a5fa; --warn:#f472b6; --tile:#111827; --wall:#1f2937;
+  }
+  *{box-sizing:border-box} html,body{height:100%}
+  body{margin:0;background:radial-gradient(1000px 500px at 0% 0%,#1b2550 0,transparent 60%),var(--bg);
+       color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+  .wrap{max-width:1100px;margin:auto;padding:16px;display:grid;gap:16px;
+        grid-template-columns: 1fr min(380px,46vw);}
+  .card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+        border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:14px; }
+  h1{font-family:"Press Start 2P",monospace; font-size:18px; margin:6px 0 8px}
+  p{margin:6px 0} .muted{color:var(--muted)}
+  canvas{display:block;border-radius:12px;border:1px solid rgba(255,255,255,.1); background:#0b0f1a}
+  .panel h2{margin:.4rem 0;font-size:16px}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{appearance:none;border:1px solid rgba(255,255,255,.14); background:#0c1324;color:var(--ink);
+       padding:8px 10px;border-radius:10px;cursor:pointer; font-weight:600}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#071019;border:none}
+  .badge{display:inline-block;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+         padding:3px 9px;border-radius:999px;font-size:12px;color:var(--muted)}
+  .kbd{font-family:monospace;background:#111827;border:1px solid #1f2937;border-radius:6px;padding:2px 6px}
+  .grid{display:grid;grid-template-columns:repeat(3,64px);gap:8px;justify-content:center}
+  .padbtn{width:64px;height:64px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:#0c1324;
+          font-size:22px}
+  dialog{border:none;border-radius:16px;max-width:min(560px,92vw);padding:16px;background:#0f172a;color:var(--ink)}
+  dialog::backdrop{background:rgba(0,0,0,.4)}
+  .footer{margin-top:6px;font-size:12px;color:var(--muted);text-align:center}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="card">
+      <h1>勇者よ、君は“杉山広”と出会った！</h1>
+      <p class="muted">矢印キー / WASD で移動。スマホは下のパッドで操作。<br>
+        まずは “役職” を選んでから開始。<br>
+        <span class="badge">2つの発見を集めるとポータル解放→連絡先へ</span>
+      </p>
+      <canvas id="game" width="416" height="416" aria-label="RPG名刺のゲーム画面"></canvas>
+
+      <!-- モバイル操作パッド -->
+      <div class="grid" aria-label="方向パッド">
+        <button class="padbtn" data-move="up">⬆︎</button>
+        <button class="padbtn" data-move="none">🎯</button>
+        <button class="padbtn" data-move="right">➡︎</button>
+        <button class="padbtn" data-move="left">⬅︎</button>
+        <button class="padbtn" data-move="down">⬇︎</button>
+        <button class="padbtn" data-move="talk">💬</button>
+      </div>
+    </section>
+
+    <aside class="card panel">
+      <h2>役職を選ぶ</h2>
+      <div class="row" id="roleRow">
+        <button class="btn" data-role="採用・人事">👤 採用・人事</button>
+        <button class="btn" data-role="事業・起業">🚀 事業・起業</button>
+        <button class="btn" data-role="研究・AI">🧪 研究・AI</button>
+        <button class="btn" data-role="デザイン・アート">🎨 デザイン・アート</button>
+        <button class="btn" data-role="学生・その他">🎒 学生・その他</button>
+      </div>
+      <p class="badge" id="roleHint">未選択</p>
+      <div class="hr"></div>
+
+      <h2>進捗</h2>
+      <p>発見：<span id="found">0</span> / 2　|　ポータル：<span id="portal">🔒</span></p>
+      <p>ヒント：<span id="hint" class="muted">中央の“H”に話しかけよう（<span class="kbd">Space</span>）</span></p>
+      <div class="row">
+        <button id="reset" class="btn">🔄 リセット</button>
+        <button id="contactBtn" class="btn primary" disabled>📨 連絡先</button>
+      </div>
+      <p class="footer">© Hiro Sugiyama | “面白さ”は真面目さの別名。</p>
+    </aside>
+  </div>
+
+  <!-- ダイアログ：会話 / 連絡先 -->
+  <dialog id="dlg">
+    <div id="dlgBody"></div>
+    <div class="row" style="margin-top:10px">
+      <button id="dlgClose" class="btn">OK</button>
+    </div>
+  </dialog>
+
+<script>
+/* =========================
+    最小構成RPG（画像なし）
+   ========================= */
+const cvs = document.getElementById('game');
+const ctx = cvs.getContext('2d');
+const TILE = 32;                   // 1マス=32px
+const W = 13, H = 13;              // 13x13 の小さなマップ
+const UI = {
+  role: document.getElementById('roleHint'),
+  found: document.getElementById('found'),
+  portal: document.getElementById('portal'),
+  hint: document.getElementById('hint'),
+  dlg: document.getElementById('dlg'),
+  dlgBody: document.getElementById('dlgBody'),
+  dlgClose: document.getElementById('dlgClose'),
+  contactBtn: document.getElementById('contactBtn')
+};
+
+// ===== マップ（#=壁 . =床 H=ヒロ(話す) A/B=発見 D=ポータル S=開始位置） =====
+const MAP = [
+  "#############",
+  "#.....A.....#",
+  "#.###...###.#",
+  "#.#.......#.#",
+  "#.#.###.#.#.#",
+  "#...#H#.#...#",
+  "#.###.#.###.#",
+  "#.....B.....#",
+  "#.#.###.###.#",
+  "#.#.....D.#.#",
+  "#.#####.###.#",
+  "#.....S.....#",
+  "#############",
+];
+
+const state = {
+  x: 6, y: 11,      // プレイヤー初期
+  role: null,
+  foundA: false,
+  foundB: false,
+  portalOpen: false
+};
+
+// 役職ごとの一言（会話に反映）
+const roleLines = {
+  "採用・人事": "再現性/ログ重視。小さく試し、学びを残す人です。",
+  "事業・起業": "仮説→MVP→反応→次の賭け。常識を半歩ズラすのが得意。",
+  "研究・AI":   "AIは増幅装置。比較実験で“行動の差”を見るのが好き。",
+  "デザイン・アート": "現代美術が好き。静かな驚きを物語とUIで設計。",
+  "学生・その他": "5分で動く遊びをつくる。祭りの火付け役タイプ。"
+};
+
+// ===== 役職選択 =====
+document.getElementById('roleRow').addEventListener('click', e=>{
+  if(!e.target.dataset.role) return;
+  state.role = e.target.dataset.role;
+  UI.role.textContent = "選択中：" + state.role;
+  tip("H（中央）に話しかけてみよう。");
+  draw();
+});
+
+// ===== 入力（PC/Mobile） =====
+document.addEventListener('keydown', e=>{
+  const k = e.key.toLowerCase();
+  if(['arrowup','w'].includes(k)) step(0,-1);
+  if(['arrowdown','s'].includes(k)) step(0,1);
+  if(['arrowleft','a'].includes(k)) step(-1,0);
+  if(['arrowright','d'].includes(k)) step(1,0);
+  if(k===' '){ talk(); }
+});
+document.querySelectorAll('.padbtn').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    const d=b.dataset.move;
+    if(d==='up') step(0,-1);
+    if(d==='down') step(0,1);
+    if(d==='left') step(-1,0);
+    if(d==='right') step(1,0);
+    if(d==='talk') talk();
+  });
+});
+
+document.getElementById('reset').onclick = ()=>{ localStorage.removeItem('meishiRPG'); location.reload(); };
+
+// ====== 保存/復元 ======
+function save(){
+  localStorage.setItem('meishiRPG', JSON.stringify(state));
+}
+function load(){
+  const s = localStorage.getItem('meishiRPG');
+  if(!s) return;
+  try{
+    const d = JSON.parse(s);
+    Object.assign(state,d);
+  }catch{}
+}
+load();
+
+// ====== 移動・衝突・イベント ======
+function tileAt(x,y){ return MAP[y]?.[x] ?? '#'; }
+function isWall(x,y){ return tileAt(x,y) === '#'; }
+
+function step(dx,dy){
+  const nx = state.x + dx, ny = state.y + dy;
+  if(isWall(nx,ny)) return; // 壁
+  state.x = nx; state.y = ny;
+  const t = tileAt(nx,ny);
+  if(t==='A' && !state.foundA){ state.foundA=true; toast("📗 観察ノートを見つけた"); }
+  if(t==='B' && !state.foundB){ state.foundB=true; toast("🧩 小さないたずらの種を拾った"); }
+  if(!state.portalOpen && state.foundA && state.foundB){
+    state.portalOpen=true; toast("🔓 ポータルが起動した！");
+  }
+  if(t==='D' && state.portalOpen){
+    openContact();
+  }
+  draw(); save();
+}
+
+function talk(){
+  if(tileAt(state.x,state.y)==='H' ||
+     Math.abs(state.x-6)+Math.abs(state.y-5)===1){
+    const lineRole = state.role ? roleLines[state.role] : "まずは右の欄で“役職”を選んでね。";
+    say(`
+      <p><strong>杉山広</strong>（慶應・経済）です。<br>
+      “人の無意識のふるまい”を観察して、静かにズラす仕掛けが好きです。</p>
+      <p class="muted">好き：現代美術／最近：AIと“会話”する実験</p>
+      <p style="margin:.6rem 0 .2rem"><span class="badge">あなた（${state.role ?? '未選択'}）向けの一言</span></p>
+      <p>${lineRole}</p>
+      <p>マップ内の <strong>A</strong> と <strong>B</strong> を見つけると、<strong>ポータル（D）</strong>から連絡先へ行けます。</p>
+    `);
+  }else{
+    toast("💬 近くに話す相手はいない");
+  }
+}
+
+// ====== UI（ダイアログ/ヒント） ======
+function say(html){
+  UI.dlgBody.innerHTML = html;
+  UI.dlg.showModal();
+}
+UI.dlgClose.onclick = ()=> UI.dlg.close();
+
+function openContact(){
+  UI.contactBtn.disabled = false;
+  UI.portal.textContent = "🟢";
+  UI.contactBtn.onclick = ()=>{
+    say(`
+      <h3>📨 連絡先</h3>
+      <ul>
+        <li><strong>LINE</strong>：your-line-id</li>
+        <li><strong>X(Twitter)</strong>：<a href="https://x.com/yourid" target="_blank">https://x.com/yourid</a></li>
+        <li><strong>Instagram</strong>：<a href="https://instagram.com/yourid" target="_blank">https://instagram.com/yourid</a></li>
+        <li><strong>Mail</strong>：yourname@example.com</li>
+        <li><strong>Portfolio</strong>：<a href="https://yourname.github.io" target="_blank">https://yourname.github.io</a></li>
+      </ul>
+      <p class="muted">“面白さ”は真面目さの別名。よければ一言ください。</p>
+    `);
+  };
+  UI.contactBtn.click(); // 初回は自動で開く
+}
+
+function tip(text){ UI.hint.textContent = text; }
+function toast(text){ tip(text); }
+
+// ====== 描画 ======
+function draw(){
+  ctx.clearRect(0,0,cvs.width,cvs.height);
+  for(let y=0;y<H;y++){
+    for(let x=0;x<W;x++){
+      const ch = MAP[y][x];
+      // 地面
+      ctx.fillStyle = (x+y)%2 ? "#0e162a" : "#0b1222";
+      ctx.fillRect(x*TILE,y*TILE,TILE,TILE);
+      // 壁
+      if(ch==='#'){
+        ctx.fillStyle = "#1f2b44";
+        ctx.fillRect(x*TILE,y*TILE,TILE,TILE);
+      }
+      // 特殊タイル
+      if(ch==='H'){ drawGlyph(x,y,"H","#facc15"); }           // ヒロ
+      if(ch==='A' && !state.foundA){ drawGlyph(x,y,"A","#86efac"); }
+      if(ch==='B' && !state.foundB){ drawGlyph(x,y,"B","#60a5fa"); }
+      if(ch==='D'){ drawGlyph(x,y, state.portalOpen?"D":"D", state.portalOpen?"#22d3ee":"#334155"); }
+    }
+  }
+  // プレイヤー
+  drawPlayer(state.x,state.y);
+  // 進捗
+  UI.found.textContent = (state.foundA?1:0) + (state.foundB?1:0);
+  UI.portal.textContent = state.portalOpen ? "🟢" : "🔒";
+}
+
+function drawGlyph(x,y,text,color){
+  ctx.fillStyle = color;
+  ctx.strokeStyle = "rgba(0,0,0,.35)";
+  ctx.lineWidth = 2;
+  roundRect(x*TILE+6,y*TILE+6,TILE-12,TILE-12,6,true,false);
+  ctx.fillStyle = "#0b1020";
+  roundRect(x*TILE+8,y*TILE+8,TILE-16,TILE-16,5,true,false);
+  ctx.fillStyle = color;
+  ctx.font = "bold 16px 'Press Start 2P',monospace";
+  ctx.textAlign="center"; ctx.textBaseline="middle";
+  ctx.fillText(text, x*TILE+TILE/2, y*TILE+TILE/2+1);
+}
+
+function drawPlayer(x,y){
+  ctx.fillStyle = "#e5e7eb";
+  ctx.beginPath();
+  ctx.arc(x*TILE+16,y*TILE+16,10,0,Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle = "#0b1020";
+  ctx.fillRect(x*TILE+12,y*TILE+12,3,3); // 目
+  ctx.fillRect(x*TILE+20,y*TILE+12,3,3);
+}
+
+function roundRect(x,y,w,h,r,fill,stroke){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r);
+  if(fill) ctx.fill(); if(stroke) ctx.stroke();
+}
+
+// 初期化：Start位置（S）を探す（保存がなければ）
+if(!localStorage.getItem('meishiRPG')){
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+    if(MAP[y][x]==='S'){ state.x=x; state.y=y; }
+  }
+}
+draw();
+</script>
+</body>
+</html>
