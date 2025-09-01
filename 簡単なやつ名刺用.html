@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>杉山広の名刺RPG – 役職で見え方が変わる自己紹介</title>
+  <meta name="description" content="OB訪問や大人向けに、失礼なくニヤッとさせる“体験型”名刺。役職を選ぶと見え方が少し変わります。" />
+  <style>
+    :root{
+      --bg:#0f172a; --card:#111827; --ink:#e5e7eb; --muted:#9ca3af;
+      --accent:#4ade80; --accent-2:#60a5fa; --ring:0 0 0 3px rgba(96,165,250,.35);
+    }
+    *{box-sizing:border-box} html,body{height:100%}
+    body{
+      margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      background: radial-gradient(1000px 600px at 20% -10%,#1f2937 0%,transparent 60%),
+                  radial-gradient(900px 500px at 100% 0%,#1b2a4a 0%,transparent 60%), var(--bg);
+      color:var(--ink); line-height:1.6; display:flex; align-items:center; justify-content:center; padding:24px;
+    }
+    .wrap{width:min(960px,100%);} .card{background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.015));
+      backdrop-filter: blur(8px); border:1px solid rgba(255,255,255,.08); border-radius:20px; padding:22px; box-shadow: 0 20px 50px rgba(0,0,0,.3);}
+    h1{margin:0 0 8px; font-size:clamp(20px,3.6vw,32px)} p.lead{margin-top:0;color:var(--muted)}
+    .row{display:flex;flex-wrap:wrap;gap:12px;margin:16px 0}
+    button,.btn{appearance:none;border:1px solid rgba(255,255,255,.12);background:#0b1220;color:var(--ink);
+      padding:10px 14px;border-radius:12px;cursor:pointer;transition:.15s; font-weight:600; letter-spacing:.2px;}
+    button:hover,.btn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.25)}
+    button.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#071019; border:none}
+    button.ghost{background:transparent} button:focus{outline:none; box-shadow:var(--ring)}
+    .muted{color:var(--muted)} .grid{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+    .badge{display:inline-block;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);padding:3px 9px;border-radius:999px;font-size:12px;color:var(--muted)}
+    .hr{height:1px;background:rgba(255,255,255,.08);margin:12px 0} .hide{display:none} a{color:#c7d2fe}
+    footer{margin-top:10px;font-size:12px;color:var(--muted);text-align:center}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section id="view-start" class="card" role="region" aria-labelledby="title">
+      <h1 id="title">勇者よ、君は“杉山広”と出会った！</h1>
+      <p class="lead">今日は <span id="mode">旅人</span> モードで登場中。<br>あなたの<strong>役職</strong>を選ぶと、見え方が少し変わります。</p>
+
+      <div class="row" id="role-buttons" aria-label="役職を選ぶ">
+        <button data-role="採用・人事">👤 採用・人事</button>
+        <button data-role="事業・起業">🚀 事業・起業</button>
+        <button data-role="研究・AI">🧪 研究・AI</button>
+        <button data-role="デザイン・アート">🎨 デザイン・アート</button>
+        <button data-role="学生・その他">🎒 学生・その他</button>
+      </div>
+      <p class="muted">※ 所要 60 秒。2つ読めば連絡先が解放されます。</p>
+    </section>
+
+    <section id="view-hub" class="card hide" role="region" aria-labelledby="hub-title">
+      <h1 id="hub-title">ようこそ <span id="role-label">採用・人事</span> さん</h1>
+      <p id="role-line" class="lead">観察→記録→次の一手。再現性を大事にします。</p>
+
+      <div class="row">
+        <button class="ghost" data-view="profile">📇 プロフィール</button>
+        <button class="ghost" data-view="notes">📝 観察ノート</button>
+        <button class="ghost" data-view="tricks">🧩 小さないたずら</button>
+        <button id="contact-btn" class="primary" data-view="contact" disabled>📨 連絡先（あと1タブ）</button>
+        <button class="ghost" id="change-role">↩️ 役職を変える</button>
+      </div>
+      <div class="hr"></div>
+      <div id="progress" class="badge">閲覧：<span id="seen-count">0</span>/3</div>
+    </section>
+
+    <section id="view-profile" class="card hide">
+      <h1>杉山広（慶應義塾大学 経済学部 2年）</h1>
+      <div class="grid">
+        <div>
+          <p><strong>好き</strong>：現代美術の鑑賞／最近はAIと“会話”する実験</p>
+          <p><strong>関心</strong>：人の<strong>無意識のふるまい</strong>を観察→定義→そっとズラす</p>
+          <p><strong>マイタグ</strong>：#違和感を観察する人</p>
+          <p><strong>目標</strong>：学生のうちに<strong>興味→形</strong>へ。胸を張って語れる実績づくり。</p>
+        </div>
+        <div>
+          <p class="muted">例）ベンチで皆が端から座る——「嫌だから」ではなく<strong>無意識の選択</strong>？<br>
+            なら、中央に座りたくなる<strong>静かなイタズラ</strong>を設計できるか。</p>
+          <p id="role-note-profile" class="badge">役職ヒント</p>
+        </div>
+      </div>
+      <div class="row"><button class="ghost" data-view="hub">← ロールハブへ</button></div>
+    </section>
+
+    <section id="view-notes" class="card hide">
+      <h1>観察ノート（30秒版）</h1>
+      <ol>
+        <li>“当たり前”をメモ（例：中央を避けがち）</li>
+        <li>定義する（例：中央=曖昧で選ばれにくい）</li>
+        <li><strong>やわらかいイタズラ</strong>でズラす（例：中央だけ模様/一言）</li>
+      </ol>
+      <p class="muted" id="role-note-notes">役職ヒント</p>
+      <div class="row"><button class="ghost" data-view="hub">← ロールハブへ</button></div>
+    </section>
+
+    <section id="view-tricks" class="card hide">
+      <h1>小さないたずら（最近の実験）</h1>
+      <ul>
+        <li>名刺RPG（これ）：情報の受け渡しを<strong>体験</strong>に置き換える</li>
+        <li>美術館：出口で<strong>「次の来館理由」</strong>を1クリック生成（AI）</li>
+        <li>ベンチ中央：座りたくなる<strong>微差</strong>で行動が変わるか検証</li>
+      </ul>
+      <p class="muted" id="role-note-tricks">役職ヒント</p>
+      <div class="row"><button class="ghost" data-view="hub">← ロールハブへ</button></div>
+    </section>
+
+    <section id="view-contact" class="card hide">
+      <h1>コンタクト</h1>
+      <p>“面白さ”は真面目さの別名だと思っています。ぜひ一度お話を。</p>
+      <div class="grid">
+        <div class="card">
+          <p><strong>LINE</strong>：your-line-id</p>
+          <p><strong>X(Twitter)</strong>：<a href="#" target="_blank" rel="noopener">https://x.com/yourid</a></p>
+          <p><strong>Instagram</strong>：<a href="#" target="_blank" rel="noopener">https://instagram.com/yourid</a></p>
+          <p><strong>Mail</strong>：yourname@example.com</p>
+          <p><strong>Portfolio</strong>：<a href="#" target="_blank" rel="noopener">https://yourname.github.io</a></p>
+        </div>
+      </div>
+      <div class="row">
+        <button class="ghost" data-view="hub">← ロールハブへ</button>
+        <button class="ghost" id="change-role-2">↩️ 役職を変える</button>
+      </div>
+      <footer>© Hiro Sugiyama</footer>
+    </section>
+  </main>
+
+  <script>
+    const state = { role: null, seen: new Set(), modePool: ["経済学徒","茶道男子","企画脳","旅人"] };
+    document.getElementById("mode").textContent = state.modePool[Math.floor(Math.random()*state.modePool.length)];
+    const roleLines = {
+      "採用・人事": {hub:"観察→記録→次の一手。再現性を大事にします。",profile:"成果は“数・速度・学び”で提示します。",notes:"評価は再現性とログ。失敗も資産にします。",tricks:"なぜそうしたか→次にどう変えたか、まで必ずセット。"},
+      "事業・起業": {hub:"仮説→MVP→反応→次の賭け。常識を半歩ズラすのが得意です。",profile:"小さく当てる→伸び筋だけ増幅、が基本姿勢です。",notes:"KPIより“継続行動”を先に作る。数字は後から付いてくる。",tricks:"5人の反応を数値+一言で記録→判断を早く。"},
+      "研究・AI": {hub:"無意識の行動に興味。AIは観察と表現の増幅装置。",profile:"軽量プロトと比較実験を好みます。擬似実験からでも始める派。",notes:"介入前後のログ（人数/滞在秒/写真）で振り返り。",tricks:"生成より“比較”。A/Bで行動差を見ます。"},
+      "デザイン・アート": {hub:"現代美術好き。静かな驚きをUI文言と物語で設計。",profile:"コピーの温度感と余白の効きにうるさいタイプ。",notes:"“押したくなる理由”を言葉と配置で作る。",tricks:"驚きの粒度を微調整。強すぎない“ニヤリ”を狙う。"},
+      "学生・その他": {hub:"5分で動く遊びを一緒に作るのが好き。祭りの火付け役タイプ。",profile:"課題もまずネタ化。楽しいは最強の接着剤。",notes:"観察→定義→一手、の練習を日常で回す。",tricks:"まずは小ネタでOK。やった数＝学びの量。"}
+    };
+    const views = ["start","hub","profile","notes","tricks","contact"];
+    function show(view){
+      for(const v of views){ document.getElementById(`view-${v}`).classList.toggle("hide", v!==view); }
+      if(view==="profile") afterSeen("profile");
+      if(view==="notes") afterSeen("notes");
+      if(view==="tricks") afterSeen("tricks");
+    }
+    function afterSeen(key){
+      if(!state.seen.has(key)){
+        state.seen.add(key);
+        document.getElementById("seen-count").textContent = state.seen.size;
+      }
+      const btn = document.getElementById("contact-btn");
+      if(state.seen.size >= 2){ btn.disabled = false; btn.textContent = "📨 連絡先（解放）"; }
+    }
+    document.getElementById("role-buttons").addEventListener("click", (e)=>{
+      if(e.target.matches("button[data-role]")){
+        state.role = e.target.dataset.role;
+        document.getElementById("role-label").textContent = state.role;
+        document.getElementById("role-line").textContent = roleLines[state.role].hub;
+        document.getElementById("role-note-profile").textContent = "役職ヒント："+roleLines[state.role].profile;
+        document.getElementById("role-note-notes").textContent    = roleLines[state.role].notes;
+        document.getElementById("role-note-tricks").textContent   = roleLines[state.role].tricks;
+        state.seen.clear();
+        document.getElementById("seen-count").textContent = 0;
+        const btn = document.getElementById("contact-btn"); btn.disabled = true; btn.textContent = "📨 連絡先（あと1タブ）";
+        show("hub");
+      }
+    });
+    document.getElementById("view-hub").addEventListener("click",(e)=>{ if(e.target.dataset.view){ show(e.target.dataset.view); } });
+    for(const id of ["view-profile","view-notes","view-tricks","view-contact"]){
+      document.getElementById(id).addEventListener("click",(e)=>{ if(e.target.dataset.view==="hub"){ show("hub"); } });
+    }
+    document.getElementById("change-role").addEventListener("click", ()=> show("start"));
+    document.getElementById("change-role-2").addEventListener("click", ()=> show("start"));
+  </script>
+</body>
+</html>
