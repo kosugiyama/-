@@ -1,124 +1,157 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>杉山 広｜プロフィール</title>
-<meta name="description" content="慶應義塾大学 経済学部2年・杉山広のプロフィール。理念／背景／趣味／連絡先。">
-<meta property="og:title" content="杉山 広｜プロフィール">
-<meta property="og:description" content="理念：茶道から学んだUXの骨組み。背景：体験展示とteamLabの現場。">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://yourname.github.io">
-<meta name="theme-color" content="#0f172a">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg:#0f172a; --panel:#111827; --ink:#e5e7eb; --muted:#9ca3af;
-    --acc:#60a5fa; --acc2:#4ade80;
-  }
-  *{box-sizing:border-box}
-  html,body{min-height:100%}
-  body{
-    margin:0; font-family:"Plus Jakarta Sans", system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-    background:
-      radial-gradient(1200px 600px at -10% -10%,#1f2937 0,transparent 60%),
-      radial-gradient(900px 500px at 110% 0%,#1b2a4a 0,transparent 60%), var(--bg);
-    color:var(--ink); line-height:1.75;
-    padding:24px;
-  }
-  main{width:min(860px,100%); margin:40px auto}
-  .card{
-    background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:18px; padding:22px 20px;
-    box-shadow:0 20px 50px rgba(0,0,0,.35);
-  }
-  h1{margin:6px 0 4px; font-size:clamp(22px,5vw,36px); font-weight:800}
-  h2{margin:.2rem 0 .6rem; font-size:1.08rem}
-  p{margin:.5rem 0} .muted{color:var(--muted)}
-  .hr{height:1px;background:rgba(255,255,255,.08);margin:12px 0}
-  a{color:#c7d2fe; text-decoration:none}
-  .cta{
-    display:inline-flex; align-items:center; justify-content:center;
-    gap:8px; padding:12px 16px; border-radius:12px; font-weight:700;
-    background:linear-gradient(90deg,var(--acc),var(--acc2)); color:#071019;
-    border:none; cursor:pointer; width:100%; text-align:center;
-  }
-  .btnrow{display:grid; gap:10px; grid-template-columns:1fr}
-  @media(min-width:640px){ .btnrow{grid-template-columns:1fr 1fr} }
-  ul.tight{margin:.2rem 0 .6rem .9rem; padding:0}
-  ul.tight>li{margin:.15rem 0}
-  footer{margin-top:8px;font-size:12px;color:var(--muted);text-align:center}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>入口 – Ko Sugiyama</title>
+  <meta name="description" content="名刺からの入口ページ。開くと自動で御神籤を引き、出会いの記録とSugipediaへの導線、連絡先を表示します。">
+  <meta name="theme-color" content="#0f172a">
+  <!-- OGP（任意） -->
+  <meta property="og:title" content="入口 – Ko Sugiyama">
+  <meta property="og:description" content="開くと自動で御神籤。出会いの記録とSugipedia/連絡先へ。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://kosugiyama.github.io/-/">
+  <meta property="og:image" content="https://kosugiyama.github.io/-/sugipedia/img/ko.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    :root{
+      --bg:#0f172a; --panel:#0b1220; --ink:#e5e7eb; --muted:#9ca3af;
+      --good:#4ade80; --bad:#f472b6; --link:#93c5fd; --border:rgba(255,255,255,.12);
+      --ring:0 0 0 3px rgba(147,197,253,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;
+      background: radial-gradient(900px 500px at 15% -10%,#1f2937 0%,transparent 60%),
+                  radial-gradient(1000px 600px at 100% 0%,#13223f 0%,transparent 60%), var(--bg);
+      color:var(--ink); line-height:1.6; display:flex; align-items:center; justify-content:center; padding:24px;
+    }
+    .wrap{width:min(880px,100%)}
+    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    .brand{font-weight:800;letter-spacing:.2px}
+    .card{
+      background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.015));
+      border:1px solid var(--border); border-radius:20px; padding:22px; box-shadow:0 16px 40px rgba(0,0,0,.35);
+      backdrop-filter: blur(8px);
+    }
+    h1{margin:0 0 6px; font-size:clamp(20px,3.6vw,30px)}
+    p.lead{margin:0 0 12px; color:var(--muted)}
+    .result{
+      display:grid; gap:10px; grid-template-columns: 120px 1fr; align-items:center; margin:14px 0 6px;
+      padding:12px; border:1px dashed var(--border); border-radius:14px; background:rgba(255,255,255,.02);
+    }
+    .omk{
+      font-size:32px; font-weight:900; text-align:center; padding:10px 8px; border-radius:12px;
+      border:1px solid var(--border);
+    }
+    .omk.good{ color:#052e1a; background:linear-gradient(90deg,var(--good),#86efac) }
+    .omk.bad { color:#3f0b20; background:linear-gradient(90deg,#fda4af,var(--bad)) }
+    .muted{color:var(--muted)}
+    .hr{height:1px;background:var(--border);margin:14px 0}
+    .row{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0 0}
+    .btn{
+      appearance:none; border:1px solid var(--border); background:#0b1220; color:var(--ink);
+      padding:10px 14px; border-radius:12px; font-weight:700; cursor:pointer; transition:.15s;
+      text-decoration:none; display:inline-flex; align-items:center; gap:8px;
+    }
+    .btn:hover{transform:translateY(-1px); border-color:rgba(255,255,255,.25)}
+    .btn.primary{ background:linear-gradient(90deg,#60a5fa,#93c5fd); color:#0b1220; border:none }
+    a{ color:var(--link) }
+    .grid{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+    small{font-size:12px}
+    footer{margin-top:8px; color:var(--muted); font-size:12px; text-align:center}
+  </style>
 </head>
 <body>
-<main>
-  <section class="card">
+  <main class="wrap">
     <header>
-      <h1>杉山 広</h1>
-      <p class="muted">慶應義塾大学 経済学部 2年</p>
+      <div class="brand">Ko Sugiyama</div>
+      <a class="btn" href="mailto:ko.sugiyama@keio.jp?subject=%E3%80%90%E5%90%8D%E5%88%BA%E3%81%8B%E3%82%89%E3%80%91%EF%BC%88%E3%81%8A%E5%90%8D%E5%89%8D%EF%BC%89&body=%E4%BB%BB%E6%84%8F%E3%81%A7%E3%81%8B%E3%81%BE%E3%81%84%E3%81%BE%E3%81%99%E3%81%8C%E3%80%81%E3%81%94%E7%94%A8%E4%BB%B6%E3%81%A8%E5%90%8D%E7%A7%B0%E3%82%92%E4%B8%80%E8%A8%80%E3%81%A0%E3%81%91%E8%BF%BD%E8%A8%98%E3%81%97%E3%81%A6%E3%81%84%E3%81%9F%E3%81%A0%E3%81%91%E3%82%8B%E3%81%A8%E5%8A%A9%E3%81%8B%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82">✉︎ メール</a>
     </header>
 
-    <div class="hr"></div>
+    <section class="card" id="panel">
+      <h1>読み取りありがとうございます</h1>
+      <p class="lead">このページは、名刺の<span class="muted">入口</span>です。開いた瞬間に<strong>御神籤</strong>を引きました。</p>
 
-    <section aria-label="自己紹介と好きなこと">
-      <h2>自己紹介と好きなこと</h2>
-      <p>現代美術や体験型展示が好きです。よく、展示会などに足を運んでいます。</p>
-      <p>作品の「意味」を一方的に受け取るより、来場者どうしの会話や感情の変化を生むような作品に惹かれます。</p>
-      <p>普段は、人の行動や無意識にある世の中の“モヤモヤ”を観察して、「こうしたら、面白そうだな」とイタズラを考えたりしています。</p>
-    </section>
-
-    <div class="hr"></div>
-
-    <section aria-label="趣味">
-      <h2>趣味</h2>
-      <ul class="tight">
-        <li>美術館巡り</li>
-        <li>カメラ</li>
-        <li>コーヒー</li>
-        <li>レトロデバイス収集</li>
-      </ul>
-    </section>
-
-    <div class="hr"></div>
-
-    <section aria-label="理念">
-      <h2>理念</h2>
-      <p>茶道に触れ、日本の"おもてなし文化"を学んだことで、準備（点前）→迎え（席入り）→体験（濃茶/薄茶）→余韻（見送り）という一連の流れが、UXの骨組みそのものだと実感しました。</p>
-      <p>「相客に心せよ」という利休の教えがあります。</p>
-      <p>私はこの教えを、「心から安心する空間は他者がいて初めて成り立つ。だからこそ互いを尊重し合い、共に空間を作る」という指針だと捉えています。</p>
-      <p>このように同席する他者を思いやる精神は、現代にも通ずると感じます。</p>
-      <p>人と人の“こころの置き場”が見えにくい時代だからこそ、小さな差、思いやりが会話を生む——この視点をデジタルに移したいと思っています。</p>
-    </section>
-
-    <div class="hr"></div>
-
-    <section aria-label="背景">
-      <h2>背景</h2>
-      <p>子どものころ、父に体験型展示やチームラボへよく連れて行ってもらい、人の“こころ”に届く体験づくりに惹かれるようになりました。のちに teamLabでアルバイトも経験して、来場する人々の表情を間近で見て、体験が人を笑顔にする力に感銘を受けました。テクノロジーが空間と重なる今、来場者が主人公になり、共感が生まれる体験をつくりたいです。</p>
-    </section>
-
-    <div class="hr"></div>
-
-    <section aria-label="連絡先">
-      <h2>コンタクト</h2>
-      <div class="btnrow">
-        <a class="cta" href="https://www.instagram.com/ko_sugiyama713?igsh=NG1sMXkzNTJ5NjNl&utm_source=qr" target="_blank" rel="noopener">📷 Instagramでつながる</a>
-        <a class="cta" id="mail" href="#">✉️ メールで連絡する</a>
+      <div class="result" id="result" hidden>
+        <div class="omk" id="omkBox">—</div>
+        <div>
+          <div id="omkMsg" style="font-weight:700">抽選中…</div>
+          <div class="muted"><small id="meet"></small></div>
+        </div>
       </div>
-      <p class="muted" style="margin-top:.4rem">メール：<code>ko.sugiyama@keio.jp</code>　/　電話：<a href="tel:09060060713">090-6006-0713</a></p>
-      <p class="muted" style="margin-top:.2rem">※ 件名にお名前を入れていただけると嬉しいです。</p>
+
+      <div class="hr"></div>
+
+      <div class="grid">
+        <div>
+          <h3 style="margin:6px 0 4px">Sugipedia</h3>
+          <p class="muted" style="margin:0 0 8px">
+            僕の自己紹介を百科事典風にまとめたページです（年譜／関心／嗜好など）。
+          </p>
+          <a class="btn primary" href="./sugipedia/">
+            📚 Sugipediaへ
+          </a>
+        </div>
+
+        <div>
+          <h3 style="margin:6px 0 4px">連絡先</h3>
+          <p style="margin:0">
+            メール：<a href="mailto:ko.sugiyama@keio.jp?subject=%E3%80%90%E5%90%8D%E5%88%BA%E3%81%8B%E3%82%89%E3%80%91%EF%BC%88%E3%81%8A%E5%90%8D%E5%89%8D%EF%BC%89&body=%E4%BB%BB%E6%84%8F%E3%81%A7%E3%81%8B%E3%81%BE%E3%81%84%E3%81%BE%E3%81%99%E3%81%8C%E3%80%81%E3%81%94%E7%94%A8%E4%BB%B6%E3%81%A8%E5%90%8D%E7%A7%B0%E3%82%92%E4%B8%80%E8%A8%80%E3%81%A0%E3%81%91%E8%BF%BD%E8%A8%98%E3%81%97%E3%81%A6%E3%81%84%E3%81%9F%E3%81%A0%E3%81%91%E3%82%8B%E3%81%A8%E5%8A%A9%E3%81%8B%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82">ko.sugiyama@keio.jp</a><br>
+            電話：<a href="tel:09060060713">090-6006-0713</a><br>
+            Instagram：<a href="https://www.instagram.com/ko_sugiyama713?igsh=NG1sMXkzNTJ5NjNl&utm_source=qr" target="_blank" rel="noopener">@ko_sugiyama713</a>
+          </p>
+        </div>
+      </div>
+
+      <footer>© Ko Sugiyama ’25/9/2</footer>
     </section>
+  </main>
 
-    <footer>© Ko Sugiyama ’25/9/2</footer>
-  </section>
-</main>
+  <script>
+    // JSTの "出会い" タイムスタンプを整形
+    function formatMeetJST(d){
+      const f = new Intl.DateTimeFormat('ja-JP', {
+        timeZone:'Asia/Tokyo', year:'numeric', month:'long', day:'numeric',
+        hour:'2-digit', minute:'2-digit'
+      });
+      return f.format(d) + '（JST）';
+    }
 
-<script>
-const addr = "ko.sugiyama@keio.jp";
-const subject = encodeURIComponent("【名刺から】（お名前）");
-const body = encodeURIComponent("（任意）ご用件とご都合の時間帯を一言だけ添えていただけると助かります。");
-document.getElementById("mail").href = `mailto:${addr}?subject=${subject}&body=${body}`;
-</script>
+    // 御神籤を引く（50/50）※比率を変えるなら r<0.7 などに
+    function drawOmikuji(){
+      return Math.random() < 0.5 ? '大吉' : '凶';
+    }
+
+    // 初期化
+    (function(){
+      const box = document.getElementById('omkBox');
+      const msg = document.getElementById('omkMsg');
+      const res = document.getElementById('result');
+      const meet = document.getElementById('meet');
+
+      // 出会い時刻（ページを開いた瞬間）
+      const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
+      meet.textContent = '出会いの記録：' + formatMeetJST(now);
+
+      // 抽選
+      const r = drawOmikuji();
+      box.textContent = r;
+      box.classList.add(r === '大吉' ? 'good' : 'bad');
+      msg.textContent = (r === '大吉')
+        ? '今日は「僕に会えたから」大吉です。'
+        : '今日は凶。でも、僕が大吉にします。';
+
+      res.hidden = false;
+      // 軽いアクセント
+      document.getElementById('panel').style.animation = 'pop .35s ease';
+    })();
+
+    // 小さなポップ効果
+    const style = document.createElement('style');
+    style.textContent = '@keyframes pop{0%{transform:scale(.98)}100%{transform:scale(1)}}';
+    document.head.appendChild(style);
+  </script>
 </body>
 </html>
