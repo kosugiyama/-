@@ -64,3 +64,9 @@ a{color:var(--link)} a:visited{color:var(--visited)}
   .infobox{float:none; width:auto; margin:0 0 14px 0}
   .toc{width:auto}
 }
+
+/* portrait in infobox */
+.infobox .portrait{ margin:8px; text-align:center }
+.infobox .portrait img{ max-width:100%; height:auto; display:block; margin:0 auto;
+  border:1px solid var(--border); background:#fff }
+.infobox .portrait figcaption{ font-size:12px; color:var(--muted); margin-top:4px }
