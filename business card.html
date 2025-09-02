@@ -35,13 +35,23 @@
     }
     h1{margin:0 0 6px; font-size:clamp(20px,3.6vw,30px)}
     p.lead{margin:0 0 12px; color:var(--muted)}
+    /* 出会いの記録カード */
+    .meet{
+      display:grid; gap:6px;
+      grid-template-columns: 1fr;
+      border:1px dashed var(--border); border-radius:12px; padding:10px 12px;
+      background:rgba(255,255,255,.02); margin:10px 0 8px;
+    }
+    .meet-title{font-weight:800}
+    .meet-note{color:var(--muted); font-size:12px}
     .result{
-      display:grid; gap:12px; grid-template-columns: 140px 1fr; align-items:center; margin:14px 0 6px;
+      display:grid; gap:12px; grid-template-columns:minmax(210px,auto) 1fr; align-items:center; margin:14px 0 6px;
       padding:12px; border:1px dashed var(--border); border-radius:14px; background:rgba(255,255,255,.02);
     }
     .omk{
-      font-size:34px; font-weight:900; text-align:center; padding:12px 10px; border-radius:12px;
-      border:1px solid var(--border); background:rgba(255,255,255,.05)
+      padding:12px 12px; border-radius:12px; border:1px solid var(--border);
+      font-size:28px; font-weight:900; white-space:nowrap; /* ← 改行させない */
+      background:rgba(255,255,255,.04);
     }
     .tag {display:inline-block; padding:4px 10px; border-radius:999px; font-weight:700; font-size:13px}
     .good{ background:linear-gradient(90deg,var(--good),#86efac); color:#062314; border:none }
@@ -63,6 +73,10 @@
     .confetti{position:fixed;top:-16px;left:0;width:100%;pointer-events:none}
     .confetti i{position:absolute;top:-10px;font-style:normal;animation:fall 1500ms linear forwards}
     @keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.8}}
+    @media (max-width:420px){
+      .result{grid-template-columns:1fr}
+      .omk{font-size:26px}
+    }
   </style>
 </head>
 <body>
@@ -74,17 +88,21 @@
 
     <section class="card" id="panel" role="region" aria-labelledby="title">
       <h1 id="title">杉山広の名刺を読み取っていただき、ありがとうございます。</h1>
-      <p class="lead">まずは<strong>御神籤</strong>をどうぞ。結果は参考。<strong>ここで出会えたあなたは、最終的に「大吉」です。</strong></p>
+      <p class="lead">まずは<strong>御神籤</strong>をどうぞ。結果は参考。</p>
 
-      <p class="muted" id="meet">出会いの記録：—</p>
+      <!-- 出会いの記録（項目カード） -->
+      <div class="meet">
+        <div class="meet-title">🗓 出会いの記録</div>
+        <div class="meet-time" id="meet">—</div>
+        <div class="meet-note">この出会い自体が「出会いボーナス」の条件です。</div>
+      </div>
 
       <div class="row">
         <button id="draw" class="btn primary" aria-label="御神籤を引く">🎲 御神籤を引く</button>
-        <!-- 上部の Sugipedia ボタンは削除 -->
       </div>
 
       <div class="result" id="result" hidden>
-        <div class="omk" id="base">—</div>
+        <div class="omk"><span style="opacity:.85">基本運勢：</span><span id="base">—</span></div>
         <div>
           <div><span class="tag" id="bonusTag">—</span></div>
           <div id="msg" style="margin-top:6px;font-weight:700">結果を表示します。</div>
@@ -111,7 +129,7 @@
         </div>
       </div>
 
-      <footer>Ko Sugiyama ’25/9/2</footer>
+      <footer>© Ko Sugiyama ’25/9/2</footer>
     </section>
   </main>
 
@@ -121,7 +139,7 @@
     // 出会い時刻（ページ表示時）をJSTで記録
     const openAt = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
     document.getElementById('meet').textContent =
-      '出会いの記録：' + new Intl.DateTimeFormat('ja-JP', {
+      new Intl.DateTimeFormat('ja-JP', {
         timeZone:'Asia/Tokyo', year:'numeric', month:'long', day:'numeric',
         hour:'2-digit', minute:'2-digit'
       }).format(openAt) + '（JST）';
@@ -161,7 +179,7 @@
     document.getElementById('draw').addEventListener('click', ()=>{
       const base = drawWeighted();
       document.getElementById('result').hidden = false;
-      document.getElementById('base').textContent = '基本運勢：' + base.name;
+      document.getElementById('base').textContent = base.name; // ← 改行させない配置
       const tag = document.getElementById('bonusTag');
       tag.textContent = '最終判定：大吉（ここで出会えたボーナス）';
       tag.className = 'tag good';
