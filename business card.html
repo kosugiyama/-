@@ -4,11 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>入口 – Ko Sugiyama</title>
-  <meta name="description" content="名刺からの入口ページ。開くと自動で御神籤を引き、出会いの記録とSugipediaへの導線、連絡先を表示します。">
+  <meta name="description" content="名刺の入口ページ。御神籤を引いて、出会いの記録・Sugipedia・連絡先へ。">
   <meta name="theme-color" content="#0f172a">
-  <!-- OGP（任意） -->
   <meta property="og:title" content="入口 – Ko Sugiyama">
-  <meta property="og:description" content="開くと自動で御神籤。出会いの記録とSugipedia/連絡先へ。">
+  <meta property="og:description" content="御神籤を引いて、出会いの記録と自己紹介（Sugipedia）へ。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://kosugiyama.github.io/-/">
   <meta property="og:image" content="https://kosugiyama.github.io/-/sugipedia/img/ko.jpg">
@@ -17,7 +16,6 @@
     :root{
       --bg:#0f172a; --panel:#0b1220; --ink:#e5e7eb; --muted:#9ca3af;
       --good:#4ade80; --bad:#f472b6; --link:#93c5fd; --border:rgba(255,255,255,.12);
-      --ring:0 0 0 3px rgba(147,197,253,.35);
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -38,21 +36,22 @@
     h1{margin:0 0 6px; font-size:clamp(20px,3.6vw,30px)}
     p.lead{margin:0 0 12px; color:var(--muted)}
     .result{
-      display:grid; gap:10px; grid-template-columns: 120px 1fr; align-items:center; margin:14px 0 6px;
+      display:grid; gap:12px; grid-template-columns: 140px 1fr; align-items:center; margin:14px 0 6px;
       padding:12px; border:1px dashed var(--border); border-radius:14px; background:rgba(255,255,255,.02);
     }
     .omk{
-      font-size:32px; font-weight:900; text-align:center; padding:10px 8px; border-radius:12px;
-      border:1px solid var(--border);
+      font-size:34px; font-weight:900; text-align:center; padding:12px 10px; border-radius:12px;
+      border:1px solid var(--border); background:rgba(255,255,255,.05)
     }
-    .omk.good{ color:#052e1a; background:linear-gradient(90deg,var(--good),#86efac) }
-    .omk.bad { color:#3f0b20; background:linear-gradient(90deg,#fda4af,var(--bad)) }
+    .tag {display:inline-block; padding:4px 10px; border-radius:999px; font-weight:700; font-size:13px}
+    .good{ background:linear-gradient(90deg,var(--good),#86efac); color:#062314; border:none }
+    .bad { background:linear-gradient(90deg,#fda4af,var(--bad)); color:#3f0b20; border:none }
     .muted{color:var(--muted)}
     .hr{height:1px;background:var(--border);margin:14px 0}
     .row{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0 0}
     .btn{
       appearance:none; border:1px solid var(--border); background:#0b1220; color:var(--ink);
-      padding:10px 14px; border-radius:12px; font-weight:700; cursor:pointer; transition:.15s;
+      padding:12px 16px; border-radius:12px; font-weight:800; cursor:pointer; transition:.15s;
       text-decoration:none; display:inline-flex; align-items:center; gap:8px;
     }
     .btn:hover{transform:translateY(-1px); border-color:rgba(255,255,255,.25)}
@@ -61,6 +60,10 @@
     .grid{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
     small{font-size:12px}
     footer{margin-top:8px; color:var(--muted); font-size:12px; text-align:center}
+    /* confetti */
+    .confetti{position:fixed;top:-16px;left:0;width:100%;pointer-events:none}
+    .confetti i{position:absolute;top:-10px;font-style:normal;animation:fall 1500ms linear forwards}
+    @keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.8}}
   </style>
 </head>
 <body>
@@ -70,15 +73,23 @@
       <a class="btn" href="mailto:ko.sugiyama@keio.jp?subject=%E3%80%90%E5%90%8D%E5%88%BA%E3%81%8B%E3%82%89%E3%80%91%EF%BC%88%E3%81%8A%E5%90%8D%E5%89%8D%EF%BC%89&body=%E4%BB%BB%E6%84%8F%E3%81%A7%E3%81%8B%E3%81%BE%E3%81%84%E3%81%BE%E3%81%99%E3%81%8C%E3%80%81%E3%81%94%E7%94%A8%E4%BB%B6%E3%81%A8%E5%90%8D%E7%A7%B0%E3%82%92%E4%B8%80%E8%A8%80%E3%81%A0%E3%81%91%E8%BF%BD%E8%A8%98%E3%81%97%E3%81%A6%E3%81%84%E3%81%9F%E3%81%A0%E3%81%91%E3%82%8B%E3%81%A8%E5%8A%A9%E3%81%8B%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82">✉︎ メール</a>
     </header>
 
-    <section class="card" id="panel">
-      <h1>読み取りありがとうございます</h1>
-      <p class="lead">このページは、名刺の<span class="muted">入口</span>です。開いた瞬間に<strong>御神籤</strong>を引きました。</p>
+    <section class="card" id="panel" role="region" aria-labelledby="title">
+      <h1 id="title">杉山広の名刺を読み取っていただき、ありがとうございます。</h1>
+      <p class="lead">まずは<strong>御神籤</strong>をどうぞ。結果がどうでも、<strong>あなたは僕に会えた時点で大吉</strong>です。</p>
+
+      <p class="muted" id="meet">出会いの記録：—</p>
+
+      <div class="row">
+        <button id="draw" class="btn primary" aria-label="御神籤を引く">🎲 御神籤を引く</button>
+        <a class="btn" href="./sugipedia/">📚 Sugipedia（自己紹介百科）へ</a>
+      </div>
 
       <div class="result" id="result" hidden>
-        <div class="omk" id="omkBox">—</div>
+        <div class="omk" id="base">—</div>
         <div>
-          <div id="omkMsg" style="font-weight:700">抽選中…</div>
-          <div class="muted"><small id="meet"></small></div>
+          <div><span class="tag" id="bonusTag">—</span></div>
+          <div id="msg" style="margin-top:6px;font-weight:700">結果を表示します。</div>
+          <div class="muted"><small>※ 出会いボーナス適用：最終判定は常に「大吉」です。</small></div>
         </div>
       </div>
 
@@ -88,11 +99,9 @@
         <div>
           <h3 style="margin:6px 0 4px">Sugipedia</h3>
           <p class="muted" style="margin:0 0 8px">
-            僕の自己紹介を百科事典風にまとめたページです（年譜／関心／嗜好など）。
+            僕の自己紹介を百科事典風にまとめました（来歴／年譜／嗜好など）。
           </p>
-          <a class="btn primary" href="./sugipedia/">
-            📚 Sugipediaへ
-          </a>
+          <a class="btn primary" href="./sugipedia/">📚 Sugipediaへ</a>
         </div>
 
         <div>
@@ -109,49 +118,68 @@
     </section>
   </main>
 
+  <div class="confetti" id="confetti" aria-hidden="true"></div>
+
   <script>
-    // JSTの "出会い" タイムスタンプを整形
-    function formatMeetJST(d){
-      const f = new Intl.DateTimeFormat('ja-JP', {
+    // 出会い時刻（ページ表示時）をJSTで記録
+    const openAt = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
+    document.getElementById('meet').textContent =
+      '出会いの記録：' + new Intl.DateTimeFormat('ja-JP', {
         timeZone:'Asia/Tokyo', year:'numeric', month:'long', day:'numeric',
         hour:'2-digit', minute:'2-digit'
-      });
-      return f.format(d) + '（JST）';
+      }).format(openAt) + '（JST）';
+
+    // 御神籤の候補と重み（落胆しない配分）
+    const items = [
+      {name:'大吉', w:25, line:'今日は完全勝利コース。出会えたので輝度+10。'},
+      {name:'中吉', w:25, line:'十分いい日。出会いボーナスで一段階アップ。'},
+      {name:'吉',   w:20, line:'静かな追い風。出会いボーナスで「大吉」扱い。'},
+      {name:'小吉', w:15, line:'じわっと良い日。会ったのでワンランクアップ。'},
+      {name:'末吉', w:10, line:'これから伸びる日。出会いで加速。'},
+      {name:'凶',   w:5,  line:'今日は凹みやすい…でも、僕が「大吉」にします。'}
+    ];
+
+    function drawWeighted() {
+      const total = items.reduce((s,i)=>s+i.w,0);
+      let r = Math.random()*total;
+      for (const i of items){ if((r-=i.w) <= 0) return i; }
+      return items[0];
     }
 
-    // 御神籤を引く（50/50）※比率を変えるなら r<0.7 などに
-    function drawOmikuji(){
-      return Math.random() < 0.5 ? '大吉' : '凶';
+    // ちょい花火（絵文字コンフェッティ）
+    function boom(){
+      const wrap = document.getElementById('confetti');
+      wrap.innerHTML = '';
+      const emo = ['🎉','✨','🎊','⭐️','💫'];
+      for(let i=0;i<40;i++){
+        const s = document.createElement('i');
+        s.textContent = emo[Math.floor(Math.random()*emo.length)];
+        s.style.left = Math.random()*100+'%';
+        s.style.fontSize = (14+Math.random()*18)+'px';
+        s.style.animationDuration = (1100+Math.random()*800)+'ms';
+        wrap.appendChild(s);
+      }
+      setTimeout(()=>wrap.innerHTML='',1800);
     }
 
-    // 初期化
-    (function(){
-      const box = document.getElementById('omkBox');
-      const msg = document.getElementById('omkMsg');
-      const res = document.getElementById('result');
-      const meet = document.getElementById('meet');
-
-      // 出会い時刻（ページを開いた瞬間）
-      const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
-      meet.textContent = '出会いの記録：' + formatMeetJST(now);
-
-      // 抽選
-      const r = drawOmikuji();
-      box.textContent = r;
-      box.classList.add(r === '大吉' ? 'good' : 'bad');
-      msg.textContent = (r === '大吉')
-        ? '今日は「僕に会えたから」大吉です。'
-        : '今日は凶。でも、僕が大吉にします。';
-
-      res.hidden = false;
-      // 軽いアクセント
-      document.getElementById('panel').style.animation = 'pop .35s ease';
-    })();
-
-    // 小さなポップ効果
-    const style = document.createElement('style');
-    style.textContent = '@keyframes pop{0%{transform:scale(.98)}100%{transform:scale(1)}}';
-    document.head.appendChild(style);
+    document.getElementById('draw').addEventListener('click', ()=>{
+      const base = drawWeighted();
+      document.getElementById('result').hidden = false;
+      document.getElementById('base').textContent = '基本運勢：' + base.name;
+      // 出会いボーナス（最終判定は常に大吉）
+      const tag = document.getElementById('bonusTag');
+      tag.textContent = '最終判定：大吉（出会いボーナス）';
+      tag.className = 'tag good';
+      // メッセージ
+      const msg = document.getElementById('msg');
+      msg.textContent = (base.line || '') + ' 今日は良いご縁、ありがとうございます。';
+      // 見た目
+      boom();
+      // ボタン文言を変更
+      const btn = document.getElementById('draw');
+      btn.textContent = 'もう一度引く';
+      btn.setAttribute('aria-label','もう一度御神籤を引く');
+    });
   </script>
 </body>
 </html>
