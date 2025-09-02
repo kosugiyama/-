@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>入口 – Ko Sugiyama</title>
-  <meta name="description" content="名刺の入口ページ。御神籤を引いて、出会いの記録・Sugipedia・連絡先へ。">
+  <meta name="description" content="名刺の入口ページ。御神籤→出会いの記録→Sugipedia→連絡先。">
   <meta name="theme-color" content="#0f172a">
   <meta property="og:title" content="入口 – Ko Sugiyama">
   <meta property="og:description" content="御神籤を引いて、出会いの記録と自己紹介（Sugipedia）へ。">
@@ -60,7 +60,6 @@
     .grid{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
     small{font-size:12px}
     footer{margin-top:8px; color:var(--muted); font-size:12px; text-align:center}
-    /* confetti */
     .confetti{position:fixed;top:-16px;left:0;width:100%;pointer-events:none}
     .confetti i{position:absolute;top:-10px;font-style:normal;animation:fall 1500ms linear forwards}
     @keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.8}}
@@ -75,13 +74,13 @@
 
     <section class="card" id="panel" role="region" aria-labelledby="title">
       <h1 id="title">杉山広の名刺を読み取っていただき、ありがとうございます。</h1>
-      <p class="lead">まずは<strong>御神籤</strong>をどうぞ。結果がどうでも、<strong>あなたは僕に会えた時点で大吉</strong>です。</p>
+      <p class="lead">まずは<strong>御神籤</strong>をどうぞ。結果は参考。<strong>ここで出会えたあなたは、最終的に「大吉」です。</strong></p>
 
       <p class="muted" id="meet">出会いの記録：—</p>
 
       <div class="row">
         <button id="draw" class="btn primary" aria-label="御神籤を引く">🎲 御神籤を引く</button>
-        <a class="btn" href="./sugipedia/">📚 Sugipedia（自己紹介百科）へ</a>
+        <!-- 上部の Sugipedia ボタンは削除 -->
       </div>
 
       <div class="result" id="result" hidden>
@@ -89,7 +88,7 @@
         <div>
           <div><span class="tag" id="bonusTag">—</span></div>
           <div id="msg" style="margin-top:6px;font-weight:700">結果を表示します。</div>
-          <div class="muted"><small>※ 出会いボーナス適用：最終判定は常に「大吉」です。</small></div>
+          <div class="muted"><small>※ 出会いボーナスにより、最終判定はつねに「大吉」です（ここで会えたから）。</small></div>
         </div>
       </div>
 
@@ -98,9 +97,7 @@
       <div class="grid">
         <div>
           <h3 style="margin:6px 0 4px">Sugipedia</h3>
-          <p class="muted" style="margin:0 0 8px">
-            僕の自己紹介を百科事典風にまとめました（来歴／年譜／嗜好など）。
-          </p>
+          <p class="muted" style="margin:0 0 8px">自己紹介を百科事典風にまとめたページです（来歴／年譜／嗜好など）。</p>
           <a class="btn primary" href="./sugipedia/">📚 Sugipediaへ</a>
         </div>
 
@@ -114,7 +111,7 @@
         </div>
       </div>
 
-      <footer>© Ko Sugiyama ’25/9/2</footer>
+      <footer>Ko Sugiyama ’25/9/2</footer>
     </section>
   </main>
 
@@ -131,14 +128,13 @@
 
     // 御神籤の候補と重み（落胆しない配分）
     const items = [
-      {name:'大吉', w:25, line:'今日は完全勝利コース。出会えたので輝度+10。'},
-      {name:'中吉', w:25, line:'十分いい日。出会いボーナスで一段階アップ。'},
-      {name:'吉',   w:20, line:'静かな追い風。出会いボーナスで「大吉」扱い。'},
-      {name:'小吉', w:15, line:'じわっと良い日。会ったのでワンランクアップ。'},
-      {name:'末吉', w:10, line:'これから伸びる日。出会いで加速。'},
-      {name:'凶',   w:5,  line:'今日は凹みやすい…でも、僕が「大吉」にします。'}
+      {name:'大吉', w:25, line:'今日は完全勝利コース。'},
+      {name:'中吉', w:25, line:'十分いい日。'},
+      {name:'吉',   w:20, line:'静かな追い風。'},
+      {name:'小吉', w:15, line:'じわっと良い日。'},
+      {name:'末吉', w:10, line:'これから伸びる日。'},
+      {name:'凶',   w:5,  line:'凹み注意。でも—'}
     ];
-
     function drawWeighted() {
       const total = items.reduce((s,i)=>s+i.w,0);
       let r = Math.random()*total;
@@ -166,16 +162,12 @@
       const base = drawWeighted();
       document.getElementById('result').hidden = false;
       document.getElementById('base').textContent = '基本運勢：' + base.name;
-      // 出会いボーナス（最終判定は常に大吉）
       const tag = document.getElementById('bonusTag');
-      tag.textContent = '最終判定：大吉（出会いボーナス）';
+      tag.textContent = '最終判定：大吉（ここで出会えたボーナス）';
       tag.className = 'tag good';
-      // メッセージ
       const msg = document.getElementById('msg');
-      msg.textContent = (base.line || '') + ' 今日は良いご縁、ありがとうございます。';
-      // 見た目
+      msg.textContent = (base.line || '') + ' ここで会えたので、最終的には「大吉」です。良いご縁をありがとうございます。';
       boom();
-      // ボタン文言を変更
       const btn = document.getElementById('draw');
       btn.textContent = 'もう一度引く';
       btn.setAttribute('aria-label','もう一度御神籤を引く');
