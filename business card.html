@@ -24,9 +24,9 @@
       background: radial-gradient(900px 500px at 15% -10%,#1f2937 0%,transparent 60%),
                   radial-gradient(1000px 600px at 100% 0%,#13223f 0%,transparent 60%), var(--bg);
       color:var(--ink); line-height:1.6;
-      display:flex; align-items:flex-start; justify-content:center;   /* ← ここを変更 */
+      display:flex; align-items:flex-start; justify-content:center;
       padding:24px;
-      padding-top: calc(16px + env(safe-area-inset-top));            /* ← ここを追加 */
+      padding-top: calc(16px + env(safe-area-inset-top));
     }
     .wrap{width:min(880px,100%)}
     header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
@@ -38,18 +38,34 @@
     }
     h1{margin:0 0 6px; font-size:clamp(20px,3.6vw,30px)}
     p.lead{margin:0 0 12px; color:var(--muted)}
+
+    /* 出会いの記録（目立たせる） */
+    .meet{
+      display:flex; align-items:center; gap:10px;
+      padding:12px; border:1px solid var(--border);
+      background:rgba(255,255,255,.06); border-radius:12px;
+      font-weight:800; margin:8px 0 6px;
+    }
+    .meet .ic{font-size:18px}
+    .meet .lab{opacity:.95}
+    .meet time{font-variant-numeric:tabular-nums}
+
+    /* 御神籤結果（重なり解消） */
     .result{
-      display:grid; gap:12px; grid-template-columns: 140px 1fr; align-items:center; margin:14px 0 6px;
+      display:grid; gap:12px;
+      grid-template-columns: minmax(128px, 36%) 1fr; /* ←固定幅やめて可変に */
+      align-items:start; margin:14px 0 6px;
       padding:12px; border:1px dashed var(--border); border-radius:14px; background:rgba(255,255,255,.02);
     }
     .omk{
       font-size:34px; font-weight:900; text-align:center; padding:12px 10px; border-radius:12px;
       border:1px solid var(--border); background:rgba(255,255,255,.05);
-      white-space:nowrap;                                               /* ← ここを追加（改行防止） */
+      white-space:nowrap; /* PCでは改行させない */
     }
-    .tag {display:inline-block; padding:4px 10px; border-radius:999px; font-weight:700; font-size:13px}
+    .tag {display:inline-block; padding:4px 10px; border-radius:999px; font-weight:700; font-size:13px; white-space:nowrap}
     .good{ background:linear-gradient(90deg,var(--good),#86efac); color:#062314; border:none }
     .bad { background:linear-gradient(90deg,#fda4af,var(--bad)); color:#3f0b20; border:none }
+
     .muted{color:var(--muted)}
     .hr{height:1px;background:var(--border);margin:14px 0}
     .row{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0 0}
@@ -67,6 +83,12 @@
     .confetti{position:fixed;top:-16px;left:0;width:100%;pointer-events:none}
     .confetti i{position:absolute;top:-10px;font-style:normal;animation:fall 1500ms linear forwards}
     @keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.8}}
+
+    /* スマホ幅は1カラムに（重なり防止） */
+    @media (max-width: 440px){
+      .result{ grid-template-columns: 1fr; gap:10px; }
+      .omk{ font-size:28px; white-space:normal; }
+    }
   </style>
 </head>
 <body>
@@ -78,9 +100,14 @@
 
     <section class="card" id="panel" role="region" aria-labelledby="title">
       <h1 id="title">杉山広の名刺を読み取っていただき、ありがとうございます。</h1>
-      <p class="lead">まずは<strong>御神籤</strong>をどうぞ。結果は参考。<strong>ここで出会えたあなたは、最終的に「大吉」です。</strong></p>
+      <p class="lead">まずは<strong>御神籤</strong>をどうぞ。結果は参考。</p>
 
-      <p class="muted" id="meet">出会いの記録：—</p>
+      <!-- 出会いの記録（目立つカード） -->
+      <p class="meet" id="meet">
+        <span class="ic">📅</span>
+        <span class="lab">出会いの記録：</span>
+        <time id="meetTime">—</time><span class="muted">（JST）</span>
+      </p>
 
       <div class="row">
         <button id="draw" class="btn primary" aria-label="御神籤を引く">🎲 御神籤を引く</button>
@@ -123,11 +150,11 @@
   <script>
     // 出会い時刻（ページ表示時）をJSTで記録
     const openAt = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
-    document.getElementById('meet').textContent =
-      '出会いの記録：' + new Intl.DateTimeFormat('ja-JP', {
+    document.getElementById('meetTime').textContent =
+      new Intl.DateTimeFormat('ja-JP', {
         timeZone:'Asia/Tokyo', year:'numeric', month:'long', day:'numeric',
         hour:'2-digit', minute:'2-digit'
-      }).format(openAt) + '（JST）';
+      }).format(openAt);
 
     // 御神籤の候補と重み（落胆しない配分）
     const items = [
