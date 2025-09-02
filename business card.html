@@ -4,14 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>入口 – Ko Sugiyama</title>
-  <meta name="description" content="名刺の入口ページ。御神籤→出会いの記録→Sugipedia→連絡先。">
+  <meta name="description" content="名刺からの入口ページ。御神籤を引いて、出会いの記録とSugipediaへの導線、連絡先を表示します。">
   <meta name="theme-color" content="#0f172a">
-  <meta property="og:title" content="入口 – Ko Sugiyama">
-  <meta property="og:description" content="御神籤を引いて、出会いの記録と自己紹介（Sugipedia）へ。">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://kosugiyama.github.io/-/">
-  <meta property="og:image" content="https://kosugiyama.github.io/-/sugipedia/img/ko.jpg">
-  <meta name="twitter:card" content="summary_large_image">
   <style>
     :root{
       --bg:#0f172a; --panel:#0b1220; --ink:#e5e7eb; --muted:#9ca3af;
@@ -20,175 +14,98 @@
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
-      margin:0; font-family: system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;
+      margin:0; 
+      padding-top:16px; /* ← スマホで上が切れないように */
+      font-family: system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;
       background: radial-gradient(900px 500px at 15% -10%,#1f2937 0%,transparent 60%),
                   radial-gradient(1000px 600px at 100% 0%,#13223f 0%,transparent 60%), var(--bg);
-      color:var(--ink); line-height:1.6; display:flex; align-items:center; justify-content:center; padding:24px;
+      color:var(--ink); line-height:1.6; display:flex; align-items:flex-start; justify-content:center; padding:24px;
     }
     .wrap{width:min(880px,100%)}
-    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-    .brand{font-weight:800;letter-spacing:.2px}
     .card{
       background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.015));
       border:1px solid var(--border); border-radius:20px; padding:22px; box-shadow:0 16px 40px rgba(0,0,0,.35);
       backdrop-filter: blur(8px);
     }
-    h1{margin:0 0 6px; font-size:clamp(20px,3.6vw,30px)}
+    h1{margin:0 0 12px; font-size:clamp(20px,4vw,28px)} /* ← margin-top削除 */
     p.lead{margin:0 0 12px; color:var(--muted)}
-    /* 出会いの記録カード */
-    .meet{
-      display:grid; gap:6px;
-      grid-template-columns: 1fr;
-      border:1px dashed var(--border); border-radius:12px; padding:10px 12px;
-      background:rgba(255,255,255,.02); margin:10px 0 8px;
-    }
-    .meet-title{font-weight:800}
-    .meet-note{color:var(--muted); font-size:12px}
-    .result{
-      display:grid; gap:12px; grid-template-columns:minmax(210px,auto) 1fr; align-items:center; margin:14px 0 6px;
-      padding:12px; border:1px dashed var(--border); border-radius:14px; background:rgba(255,255,255,.02);
-    }
-    .omk{
-      padding:12px 12px; border-radius:12px; border:1px solid var(--border);
-      font-size:28px; font-weight:900; white-space:nowrap; /* ← 改行させない */
-      background:rgba(255,255,255,.04);
-    }
-    .tag {display:inline-block; padding:4px 10px; border-radius:999px; font-weight:700; font-size:13px}
-    .good{ background:linear-gradient(90deg,var(--good),#86efac); color:#062314; border:none }
-    .bad { background:linear-gradient(90deg,#fda4af,var(--bad)); color:#3f0b20; border:none }
-    .muted{color:var(--muted)}
-    .hr{height:1px;background:var(--border);margin:14px 0}
-    .row{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0 0}
     .btn{
-      appearance:none; border:1px solid var(--border); background:#0b1220; color:var(--ink);
-      padding:12px 16px; border-radius:12px; font-weight:800; cursor:pointer; transition:.15s;
-      text-decoration:none; display:inline-flex; align-items:center; gap:8px;
+      display:inline-block; padding:10px 16px; border-radius:10px;
+      background:#2563eb; color:white; text-decoration:none; font-weight:600; border:none; cursor:pointer;
     }
-    .btn:hover{transform:translateY(-1px); border-color:rgba(255,255,255,.25)}
-    .btn.primary{ background:linear-gradient(90deg,#60a5fa,#93c5fd); color:#0b1220; border:none }
-    a{ color:var(--link) }
-    .grid{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
-    small{font-size:12px}
-    footer{margin-top:8px; color:var(--muted); font-size:12px; text-align:center}
-    .confetti{position:fixed;top:-16px;left:0;width:100%;pointer-events:none}
-    .confetti i{position:absolute;top:-10px;font-style:normal;animation:fall 1500ms linear forwards}
-    @keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.8}}
-    @media (max-width:420px){
-      .result{grid-template-columns:1fr}
-      .omk{font-size:26px}
+    .btn:hover{background:#3b82f6}
+    .result{
+      margin-top:14px; padding:14px; border:1px dashed var(--border); border-radius:14px;
+      background:rgba(255,255,255,.02);
     }
+    .fortune{font-size:22px; font-weight:700}
+    .good{color:#4ade80}
+    .bad{color:#f472b6}
+    .muted{color:var(--muted)}
+    footer{margin-top:12px; color:var(--muted); font-size:12px; text-align:center}
   </style>
 </head>
 <body>
   <main class="wrap">
-    <header>
-      <div class="brand">Ko Sugiyama</div>
-      <a class="btn" href="mailto:ko.sugiyama@keio.jp?subject=%E3%80%90%E5%90%8D%E5%88%BA%E3%81%8B%E3%82%89%E3%80%91%EF%BC%88%E3%81%8A%E5%90%8D%E5%89%8D%EF%BC%89&body=%E4%BB%BB%E6%84%8F%E3%81%A7%E3%81%8B%E3%81%BE%E3%81%84%E3%81%BE%E3%81%99%E3%81%8C%E3%80%81%E3%81%94%E7%94%A8%E4%BB%B6%E3%81%A8%E5%90%8D%E7%A7%B0%E3%82%92%E4%B8%80%E8%A8%80%E3%81%A0%E3%81%91%E8%BF%BD%E8%A8%98%E3%81%97%E3%81%A6%E3%81%84%E3%81%9F%E3%81%A0%E3%81%91%E3%82%8B%E3%81%A8%E5%8A%A9%E3%81%8B%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82">✉︎ メール</a>
-    </header>
+    <section class="card">
+      <h1>杉山広の名刺を読み取っていただき、ありがとうございます。</h1>
+      <p class="lead">まずは御神籤をどうぞ。結果は参考です。<br>この出会い自体が「出会いボーナス」で、最終的にはいつでも<strong>大吉</strong>です。</p>
 
-    <section class="card" id="panel" role="region" aria-labelledby="title">
-      <h1 id="title">杉山広の名刺を読み取っていただき、ありがとうございます。</h1>
-      <p class="lead">まずは<strong>御神籤</strong>をどうぞ。結果は参考。</p>
+      <p id="meetBox" class="muted" style="margin:10px 0">📅 出会いの記録：—</p>
 
-      <!-- 出会いの記録（項目カード） -->
-      <div class="meet">
-        <div class="meet-title">🗓 出会いの記録</div>
-        <div class="meet-time" id="meet">—</div>
-        <div class="meet-note">この出会い自体が「出会いボーナス」の条件です。</div>
-      </div>
-
-      <div class="row">
-        <button id="draw" class="btn primary" aria-label="御神籤を引く">🎲 御神籤を引く</button>
-      </div>
+      <button class="btn" id="drawBtn">🎲 御神籤を引く</button>
 
       <div class="result" id="result" hidden>
-        <div class="omk"><span style="opacity:.85">基本運勢：</span><span id="base">—</span></div>
-        <div>
-          <div><span class="tag" id="bonusTag">—</span></div>
-          <div id="msg" style="margin-top:6px;font-weight:700">結果を表示します。</div>
-          <div class="muted"><small>※ 出会いボーナスにより、最終判定はつねに「大吉」です（ここで会えたから）。</small></div>
-        </div>
+        <div class="fortune" id="fortuneText">—</div>
+        <p id="fortuneMsg" style="margin:6px 0 0">結果を表示します。</p>
+        <p class="muted" style="margin:4px 0 0">※ 出会いボーナスにより、最終判定はつねに「大吉」です（ここで会えたから）。</p>
       </div>
 
-      <div class="hr"></div>
+      <div style="margin-top:18px">
+        <h3>Sugipedia</h3>
+        <p class="muted" style="margin:0 0 6px">自己紹介を百科事典風にまとめたページです。</p>
+        <a class="btn" href="./sugipedia/">📚 Sugipediaへ</a>
+      </div>
 
-      <div class="grid">
-        <div>
-          <h3 style="margin:6px 0 4px">Sugipedia</h3>
-          <p class="muted" style="margin:0 0 8px">自己紹介を百科事典風にまとめたページです（来歴／年譜／嗜好など）。</p>
-          <a class="btn primary" href="./sugipedia/">📚 Sugipediaへ</a>
-        </div>
-
-        <div>
-          <h3 style="margin:6px 0 4px">連絡先</h3>
-          <p style="margin:0">
-            メール：<a href="mailto:ko.sugiyama@keio.jp?subject=%E3%80%90%E5%90%8D%E5%88%BA%E3%81%8B%E3%82%89%E3%80%91%EF%BC%88%E3%81%8A%E5%90%8D%E5%89%8D%EF%BC%89&body=%E4%BB%BB%E6%84%8F%E3%81%A7%E3%81%8B%E3%81%BE%E3%81%84%E3%81%BE%E3%81%99%E3%81%8C%E3%80%81%E3%81%94%E7%94%A8%E4%BB%B6%E3%81%A8%E5%90%8D%E7%A7%B0%E3%82%92%E4%B8%80%E8%A8%80%E3%81%A0%E3%81%91%E8%BF%BD%E8%A8%98%E3%81%97%E3%81%A6%E3%81%84%E3%81%9F%E3%81%A0%E3%81%91%E3%82%8B%E3%81%A8%E5%8A%A9%E3%81%8B%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82">ko.sugiyama@keio.jp</a><br>
-            電話：<a href="tel:09060060713">090-6006-0713</a><br>
-            Instagram：<a href="https://www.instagram.com/ko_sugiyama713?igsh=NG1sMXkzNTJ5NjNl&utm_source=qr" target="_blank" rel="noopener">@ko_sugiyama713</a>
-          </p>
-        </div>
+      <div style="margin-top:18px">
+        <h3>連絡先</h3>
+        <p style="margin:0">
+          メール：<a href="mailto:ko.sugiyama@keio.jp">ko.sugiyama@keio.jp</a><br>
+          電話：<a href="tel:09060060713">090-6006-0713</a><br>
+          Instagram：<a href="https://www.instagram.com/ko_sugiyama713" target="_blank">@ko_sugiyama713</a>
+        </p>
       </div>
 
       <footer>© Ko Sugiyama ’25/9/2</footer>
     </section>
   </main>
 
-  <div class="confetti" id="confetti" aria-hidden="true"></div>
-
   <script>
-    // 出会い時刻（ページ表示時）をJSTで記録
-    const openAt = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
-    document.getElementById('meet').textContent =
-      new Intl.DateTimeFormat('ja-JP', {
-        timeZone:'Asia/Tokyo', year:'numeric', month:'long', day:'numeric',
-        hour:'2-digit', minute:'2-digit'
-      }).format(openAt) + '（JST）';
+    // 出会い時刻
+    const meetBox = document.getElementById("meetBox");
+    const now = new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Tokyo"}));
+    meetBox.textContent = "📅 出会いの記録：" + new Intl.DateTimeFormat("ja-JP",{
+      timeZone:"Asia/Tokyo",year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"
+    }).format(now) + " (JST)";
 
-    // 御神籤の候補と重み（落胆しない配分）
-    const items = [
-      {name:'大吉', w:25, line:'今日は完全勝利コース。'},
-      {name:'中吉', w:25, line:'十分いい日。'},
-      {name:'吉',   w:20, line:'静かな追い風。'},
-      {name:'小吉', w:15, line:'じわっと良い日。'},
-      {name:'末吉', w:10, line:'これから伸びる日。'},
-      {name:'凶',   w:5,  line:'凹み注意。でも—'}
+    // 御神籤候補
+    const fortunes = [
+      {text:"大吉", msg:"最高の運勢。今日は良いご縁に恵まれます。", cls:"good"},
+      {text:"中吉", msg:"流れは順調。焦らずに進めば良い結果が出ます。", cls:"good"},
+      {text:"小吉", msg:"小さな幸運。見落とさず拾ってみてください。", cls:"good"},
+      {text:"吉",   msg:"静かな運気。出会いが縁を広げます。", cls:"good"},
+      {text:"凶",   msg:"一見よくないように見えても学びに変わります。", cls:"bad"}
     ];
-    function drawWeighted() {
-      const total = items.reduce((s,i)=>s+i.w,0);
-      let r = Math.random()*total;
-      for (const i of items){ if((r-=i.w) <= 0) return i; }
-      return items[0];
-    }
 
-    // ちょい花火（絵文字コンフェッティ）
-    function boom(){
-      const wrap = document.getElementById('confetti');
-      wrap.innerHTML = '';
-      const emo = ['🎉','✨','🎊','⭐️','💫'];
-      for(let i=0;i<40;i++){
-        const s = document.createElement('i');
-        s.textContent = emo[Math.floor(Math.random()*emo.length)];
-        s.style.left = Math.random()*100+'%';
-        s.style.fontSize = (14+Math.random()*18)+'px';
-        s.style.animationDuration = (1100+Math.random()*800)+'ms';
-        wrap.appendChild(s);
-      }
-      setTimeout(()=>wrap.innerHTML='',1800);
-    }
-
-    document.getElementById('draw').addEventListener('click', ()=>{
-      const base = drawWeighted();
-      document.getElementById('result').hidden = false;
-      document.getElementById('base').textContent = base.name; // ← 改行させない配置
-      const tag = document.getElementById('bonusTag');
-      tag.textContent = '最終判定：大吉（ここで出会えたボーナス）';
-      tag.className = 'tag good';
-      const msg = document.getElementById('msg');
-      msg.textContent = (base.line || '') + ' ここで会えたので、最終的には「大吉」です。良いご縁をありがとうございます。';
-      boom();
-      const btn = document.getElementById('draw');
-      btn.textContent = 'もう一度引く';
-      btn.setAttribute('aria-label','もう一度御神籤を引く');
+    document.getElementById("drawBtn").addEventListener("click",()=>{
+      const res = document.getElementById("result");
+      const fortuneText = document.getElementById("fortuneText");
+      const fortuneMsg = document.getElementById("fortuneMsg");
+      const pick = fortunes[Math.floor(Math.random()*fortunes.length)];
+      fortuneText.textContent = pick.text;
+      fortuneText.className = "fortune " + pick.cls;
+      fortuneMsg.textContent = pick.msg;
+      res.hidden = false;
     });
   </script>
 </body>
