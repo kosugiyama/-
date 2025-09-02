@@ -70,7 +70,7 @@
 
       <table>
         <tr><th>名前</th><td>杉山 広（すぎやま こう / <span lang="en">Ko Sugiyama</span>）</td></tr>
-        <tr><th>生年月日</th><td>2005年7月13日（20歳）</td></tr>
+        <tr><th>生年月日</th><td>2005年7月13日（<span id="age">–</span>歳）</td></tr>
         <tr><th>国籍</th><td>日本</td></tr>
         <tr><th>出生地</th><td>東京都</td></tr>
         <tr><th>愛称</th><td>スギちゃん、すぎ</td></tr>
@@ -179,6 +179,19 @@
     li.appendChild(a);
     list.appendChild(li);
   });
+})();
+</script>
+  <script>
+// 年齢の自動計算（JST基準）
+(function(){
+  const birthJST = new Date('2005-07-13T00:00:00+09:00');        // 誕生日（日本時間）
+  // 今をJSTで取得（UTC跨ぎ対策）
+  const nowJST = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
+  let age = nowJST.getFullYear() - birthJST.getFullYear();
+  const m = nowJST.getMonth() - birthJST.getMonth();
+  if (m < 0 || (m === 0 && nowJST.getDate() < birthJST.getDate())) age--;
+  const el = document.getElementById('age');
+  if (el) el.textContent = age;
 })();
 </script>
 </body>
