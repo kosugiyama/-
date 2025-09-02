@@ -1,0 +1,66 @@
+:root{
+  --bg:#f6f6f6; --panel:#fff; --ink:#202122; --muted:#54595d;
+  --border:#a2a9b1; --link:#0645ad; --visited:#0b0080;
+}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{margin:0; background:var(--bg); color:var(--ink);
+  font:15px/1.65 -apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Segoe UI",Roboto,Helvetica,Arial,"Noto Sans JP","Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";}
+
+/* ヘッダ + タブ */
+.site-header{background:#fff; border-bottom:1px solid var(--border)}
+.site-wrap{width:min(1100px,100%); margin:0 auto; padding:0 16px; position:relative}
+.brand{display:inline-block; font-weight:700; color:#202122; text-decoration:none; padding:10px 0; font-size:18px}
+.top-tabs{list-style:none; margin:0; padding:0; display:flex; gap:6px; position:absolute; right:16px; top:6px}
+.top-tabs li{border:1px solid var(--border); border-bottom:none; border-radius:2px 2px 0 0; background:#eaecf0}
+.top-tabs li.selected{background:#fff}
+.top-tabs a{display:block; padding:6px 8px; color:#202122; text-decoration:none; font-size:13px}
+
+/* レイアウト */
+.layout{display:grid; grid-template-columns:240px 1fr; gap:16px; width:min(1100px,100%); margin:10px auto}
+.sidebar{padding-left:16px}
+.box{background:#fff; border:1px solid var(--border); margin:0 0 10px 0}
+.boxhead{background:#eaecf0; border-bottom:1px solid var(--border); padding:6px 8px; font-weight:700}
+.box ul{list-style:none; margin:0; padding:6px 8px}
+.box li{margin:.15rem 0}
+.box a{color:var(--link); text-decoration:none}
+.box a:hover{text-decoration:underline}
+
+/* 本文 */
+.content{background:var(--panel); border:1px solid var(--border); padding:20px; border-radius:2px}
+h1{font-weight:400; font-size:28px; margin:.1rem 0 .6rem}
+h2{font-weight:700; font-size:20px; border-bottom:1px solid #eaecf0; padding-bottom:2px; margin-top:1rem}
+.lead{margin-top:0; color:var(--muted)}
+.muted{color:var(--muted)}
+a{color:var(--link)} a:visited{color:var(--visited)}
+
+/* インフォボックス */
+.infobox{float:right; width:290px; margin:0 0 14px 14px; background:#f8f9fa; border:1px solid var(--border); font-size:90%}
+.infobox .ibox-head{background:#eaecf0; padding:6px 8px; font-weight:700; border-bottom:1px solid var(--border)}
+.infobox table{width:100%; border-collapse:collapse}
+.infobox th,.infobox td{border-bottom:1px solid #eaecf0; vertical-align:top; padding:6px 8px}
+.infobox th{width:36%; color:#202122; font-weight:700}
+
+/* 目次 */
+.toc{background:#f8f9fa; border:1px solid var(--border); padding:10px; width:260px; font-size:90%}
+.toc .toctitle{font-weight:700; margin-bottom:6px}
+#toc-list{margin:0; padding-left:18px}
+
+/* 参考文献 */
+.references{margin-left:20px}
+.references li{margin:.25rem 0}
+
+/* 印刷時 */
+@media print{
+  .sidebar,.top-tabs,.site-header{display:none}
+  .layout{display:block; width:auto; margin:0}
+  .content{border:none}
+  a[href]:after{content:" (" attr(href) ")"; font-size:smaller}
+}
+
+/* 小画面 */
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr}
+  .infobox{float:none; width:auto; margin:0 0 14px 0}
+  .toc{width:auto}
+}
